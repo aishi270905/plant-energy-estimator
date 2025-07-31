@@ -17,10 +17,6 @@ threshold = st.slider("⚙️ Set Energy Efficiency Threshold (kWh per ton)",
                       min_value=100, max_value=1000, value=600, step=50)
 
 
-st.header("📂 Upload Data (Optional)")
-
-uploaded_file = st.file_uploader("Upload a CSV file with Energy and Steel data", type=["csv"])
-
 st.markdown("""
 📝 **CSV format expected**:  
 Upload a file with two columns named:
