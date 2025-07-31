@@ -12,7 +12,9 @@ This tool calculates **energy per ton** and gives alerts when usage exceeds a th
 """)
 
 # Threshold
-THRESHOLD = 600  # kWh per ton
+threshold = st.slider("⚙️ Set Energy Efficiency Threshold (kWh per ton)", 
+                      min_value=100, max_value=1000, value=600, step=50)
+
 
 st.header("📂 Upload Data (Optional)")
 
@@ -20,42 +22,65 @@ uploaded_file = st.file_uploader("Upload a CSV file with Energy and Steel data",
 
 st.markdown("""
 📝 **CSV format expected**:  
-Make sure your uploaded file has **two columns** like this:
+Upload a file with two columns named:
+- `Energy Used (kWh)`
+- `Steel Produced (tons)`
+""")
+
 
 # Input Form
-st.header("🔧 Input Daily Data")
-days = st.number_input("Number of days to track", min_value=1, max_value=31, value=7)
-use_random = st.checkbox("🎲 Generate random sample data")
+st.header("📂 Upload Data (Optional)")
+uploaded_file = st.file_uploader("Upload a CSV file with Energy and Steel data", type=["csv"])
 
+use_random = st.checkbox("🎲 Generate random sample data")
 energy_list = []
 steel_list = []
 
 if uploaded_file is not None:
-    df_upload = pd.read_csv(uploaded_file)
     try:
+        df_upload = pd.read_csv(uploaded_file)
         energy_list = df_upload.iloc[:, 0].tolist()
         steel_list = df_upload.iloc[:, 1].tolist()
         days = len(energy_list)
-        st.success("CSV data loaded successfully!")
+        st.success("📄 CSV data loaded successfully!")
     except Exception as e:
-        st.error("❌ Error reading CSV file. Please ensure it has 2 numeric columns.")
+        st.error("❌ Error reading CSV file. Ensure it has 2 numeric columns like: Energy (kWh), Steel (tons)")
+
+elif use_random:
+    days = st.number_input("📅 Number of days to generate random data", min_value=1, max_value=31, value=7)
+    energy_list = [round(random.uniform(400, 900), 2) for _ in range(days)]
+    steel_list = [round(random.uniform(5, 20), 2) for _ in range(days)]
+    st.success("✅ Random sample data generated.")
+
 else:
-    # Manual input
-    st.header("🔧 Input Daily Data")
-    days = st.number_input("Number of days to track", min_value=1, max_value=31, value=7)
+    days = st.number_input("📅 Number of days to enter data manually", min_value=1, max_value=31, value=7)
+    st.markdown("### ✍️ Manual Entry")
 
     for i in range(days):
-        st.subheader(f"Day {i+1}")
-        energy = st.number_input(f"→ Energy used (kWh) [Day {i+1}]", min_value=0.0, key=f"e{i}")
-        steel = st.number_input(f"→ Steel produced (tons) [Day {i+1}]", min_value=0.0, key=f"s{i}")
+        st.subheader(f"Day {i + 1}")
+        energy = st.number_input(f"→ Energy used (kWh) [Day {i + 1}]", min_value=0.0, key=f"e{i}")
+        steel = st.number_input(f"→ Steel produced (tons) [Day {i + 1}]", min_value=0.0, key=f"s{i}")
         energy_list.append(energy)
         steel_list.append(steel)
 
 
 
+
 # Calculate efficiency
 efficiency_list = [e/s if s != 0 else 0 for e, s in zip(energy_list, steel_list)]
-alerts = ["⚠️ High" if eff > THRESHOLD else "✅ OK" for eff in efficiency_list]
+alerts = ["⚠️ High" if eff > threshold else "✅ OK" for eff in efficiency_list]
+
+# Efficiency category
+def categorize_efficiency(value):
+    if value <= threshold * 0.8:
+        return "✅ Excellent"
+    elif value <= threshold:
+        return "🟡 Acceptable"
+    else:
+        return "🔴 Poor"
+
+efficiency_tags = [categorize_efficiency(eff) for eff in efficiency_list]
+
 
 # Dataframe for display
 df = pd.DataFrame({
@@ -63,7 +88,8 @@ df = pd.DataFrame({
     "Energy Used (kWh)": energy_list,
     "Steel Produced (tons)": steel_list,
     "Energy per Ton (kWh/ton)": efficiency_list,
-    "Alert": alerts
+    "Alert": alerts,
+    "Efficiency Tag": efficiency_tags
 })
 
 # Show Results
@@ -79,7 +105,7 @@ st.markdown(f"**Total Energy Used:** `{total_energy:.2f}` kWh")
 st.markdown(f"**Total Steel Produced:** `{total_steel:.2f}` tons")
 st.markdown(f"**Average Energy per Ton:** `{avg_efficiency:.2f}` kWh/ton")
 
-if avg_efficiency > THRESHOLD:
+if avg_efficiency > threshold:
     st.warning("⚠️ Weekly efficiency is high. Investigate for energy waste.")
 else:
     st.success("✅ Weekly efficiency is within limit.")
@@ -88,7 +114,7 @@ else:
 st.header("📈 Efficiency Trend")
 fig, ax = plt.subplots()
 ax.plot(df["Day"], df["Energy per Ton (kWh/ton)"], marker='o')
-ax.axhline(y=THRESHOLD, color='r', linestyle='--', label='Threshold')
+ax.axhline(y=threshold, color='r', linestyle='--', label='threshold')
 ax.set_xlabel("Day")
 ax.set_ylabel("kWh per ton")
 ax.set_title("Daily Energy Efficiency")
