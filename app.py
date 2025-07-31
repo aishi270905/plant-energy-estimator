@@ -7,9 +7,9 @@ import io
 st.markdown(
     """
     <style>
-    /* Change background color */
+  
     .stApp {
-        background-color: #f0f8ff; /* Light blue shade */
+        background-color: #fbe9e7; 
     }
 
     /* Optional: Change font */
@@ -19,7 +19,7 @@ st.markdown(
 
     /* Optional: Style headers */
     h1, h2, h3 {
-        color: #fbe9e7;
+        color: #2c3e50;
     }
     </style>
     """,
