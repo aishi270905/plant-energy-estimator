@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import random
 # Title and Description
 st.title("🌿 Plant Energy Usage Estimator")
 st.markdown("""
@@ -15,16 +15,23 @@ THRESHOLD = 600  # kWh per ton
 # Input Form
 st.header("🔧 Input Daily Data")
 days = st.number_input("Number of days to track", min_value=1, max_value=31, value=7)
+use_random = st.checkbox("🎲 Generate random sample data")
 
 energy_list = []
 steel_list = []
 
 for i in range(days):
-    st.subheader(f"Day {i+1}")
-    energy = st.number_input(f"→ Energy used (kWh) [Day {i+1}]", min_value=0.0, key=f"e{i}")
-    steel = st.number_input(f"→ Steel produced (tons) [Day {i+1}]", min_value=0.0, key=f"s{i}")
+    if use_random:
+        energy = random.uniform(4500, 7500)  # kWh
+        steel = random.uniform(8, 14)        # tons
+    else:
+        st.subheader(f"Day {i+1}")
+        energy = st.number_input(f"→ Energy used (kWh) [Day {i+1}]", min_value=0.0, key=f"e{i}")
+        steel = st.number_input(f"→ Steel produced (tons) [Day {i+1}]", min_value=0.0, key=f"s{i}")
+    
     energy_list.append(energy)
     steel_list.append(steel)
+
 
 # Calculate efficiency
 efficiency_list = [e/s if s != 0 else 0 for e, s in zip(energy_list, steel_list)]
