@@ -9,8 +9,11 @@ import io
 st.title("🌿 Plant Energy Usage Estimator")
 st.markdown("""
 Monitor and improve your plant's energy efficiency by tracking energy used and steel output.  
-This tool calculates **energy per ton** and gives alerts when usage exceeds a threshold.
+This tool calculates **energy per ton**, tags performance, estimates CO₂, and supports CSV export.
 """)
+
+selected_date = st.date_input(L["date_prompt"], help="Used to tag your report by date")
+
 
 # Threshold
 threshold = st.slider("⚙️ Set Energy Efficiency Threshold (kWh per ton)", 
