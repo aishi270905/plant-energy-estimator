@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import io
 
+
 # Title and Description
 st.title("🌿 Plant Energy Usage Estimator")
 st.markdown("""
@@ -47,6 +48,9 @@ if uploaded_file is not None:
         st.error("❌ Error reading CSV file. Ensure it has 2 numeric columns like: Energy (kWh), Steel (tons)")
 
 elif use_random:
+    # 📅 Date Selector
+    selected_date = st.date_input("Select report date", help="This helps identify your report by date")
+
     days = st.number_input("📅 Number of days to generate random data", min_value=1, max_value=31, value=7)
     energy_list = [round(random.uniform(400, 900), 2) for _ in range(days)]
     steel_list = [round(random.uniform(5, 20), 2) for _ in range(days)]
@@ -84,13 +88,14 @@ efficiency_tags = [categorize_efficiency(eff) for eff in efficiency_list]
 
 # Dataframe for display
 df = pd.DataFrame({
+    "Date": [selected_date] * days,
     "Day": list(range(1, days+1)),
     "Energy Used (kWh)": energy_list,
     "Steel Produced (tons)": steel_list,
     "Energy per Ton (kWh/ton)": efficiency_list,
-    "Alert": alerts,
-    "Efficiency Tag": efficiency_tags
+    "Alert": alerts
 })
+
 
 # Show Results
 st.header("📊 Efficiency Results")
@@ -104,6 +109,28 @@ avg_efficiency = total_energy / total_steel if total_steel != 0 else 0
 st.markdown(f"**Total Energy Used:** `{total_energy:.2f}` kWh")
 st.markdown(f"**Total Steel Produced:** `{total_steel:.2f}` tons")
 st.markdown(f"**Average Energy per Ton:** `{avg_efficiency:.2f}` kWh/ton")
+
+# CO₂ Emissions Estimator
+st.header("🌍 CO₂ Emissions Estimator (Green Focus)")
+
+emission_rate = st.number_input(
+    "Enter CO₂ emission rate per kWh (kg CO₂/kWh)", 
+    min_value=0.0, value=0.9, step=0.1, 
+    help="Average global CO₂ emission factor is about 0.9 kg/kWh"
+)
+
+total_emissions = total_energy * emission_rate
+
+st.markdown(f"**Estimated Total CO₂ Emissions:** `{total_emissions:.2f}` kg")
+
+# Optional: Badge
+if total_emissions < 500:
+    st.success("✅ Low Carbon Footprint! Great Job!")
+elif total_emissions < 1000:
+    st.info("🟡 Moderate Emissions")
+else:
+    st.warning("🔴 High Carbon Output. Consider efficiency upgrades.")
+
 
 if avg_efficiency > threshold:
     st.warning("⚠️ Weekly efficiency is high. Investigate for energy waste.")
@@ -131,6 +158,6 @@ csv_data = csv_buffer.getvalue()
 st.download_button(
     label="Download CSV Report",
     data=csv_data,
-    file_name="plant_energy_report.csv",
+    file_name=f"plant_energy_report_{selected_date}.csv",
     mime="text/csv"
 )
