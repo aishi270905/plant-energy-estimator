@@ -4,27 +4,37 @@ import matplotlib.pyplot as plt
 import random
 import io
 
-st.markdown(
-    """
+# Theme toggle
+mode = st.sidebar.radio("Choose Theme Mode:", ["🌞 Light Mode", "🌚 Dark Mode"])
+
+if mode == "🌞 Light Mode":
+    background = "#f9f9f9"
+    font = "#111111"
+    header = "#2c3e50"
+    chart_color = "#2e8b57"
+else:
+    background = "#000000"
+    font = "#f0f0f0"
+    header = "#ffffff"
+    chart_color = "#90ee90"
+
+# Custom CSS with dynamic theme
+st.markdown(f"""
     <style>
-  
-    .stApp {
-        background-color: #000000; 
-    }
-
-    /* Optional: Change font */
-    html, body, [class*="css"]  {
+    .stApp {{
+        background-color: {background};
+        color: {font};
+    }}
+    html, body, [class*="css"]  {{
         font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Optional: Style headers */
-    h1, h2, h3 {
-        color: #2c3e50;
-    }
+        color: {font};
+    }}
+    h1, h2, h3, h4, h5, h6 {{
+        color: {header};
+    }}
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
+
 
 # Title and Description
 st.title("🌿 Plant Energy Usage Estimator")
