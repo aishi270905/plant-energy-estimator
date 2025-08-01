@@ -111,7 +111,11 @@ Upload a file with two columns named:
 st.header("📂 Upload Data (Optional)")
 uploaded_file = st.file_uploader("Upload a CSV file with Energy and Steel data", type=["csv"])
 
-use_random = st.checkbox("🎲 Generate random sample data")
+st.markdown(
+    f"<h3 style='color: {'black' if mode == 'Light' else 'white'};'>Generate random sample data</h3>", 
+    unsafe_allow_html=True
+)
+
 energy_list = []
 steel_list = []
 
@@ -298,7 +302,7 @@ else:
 
 
 # 🔁 Plotly Chart: Enhanced Efficiency Trend
-st.header("📈 Efficiency Trend (Interactive)")
+st.header("📈 Efficiency Trend")
 
 fig = px.line(
     df,
