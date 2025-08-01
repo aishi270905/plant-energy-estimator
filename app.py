@@ -37,6 +37,30 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+if mode == "Light":
+    st.markdown(
+        """
+        <style>
+        html, body, [class*="css"]  {
+            color: black !important;
+        }
+        label, div[data-testid="stMarkdownContainer"] {
+            color: black !important;
+        }
+        .stTextInput > div > label,
+        .stNumberInput > div > label,
+        .stDateInput > div > label,
+        .stSelectbox > div > label,
+        .stSlider > div > label {
+            color: black !important;
+            font-weight: 500;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # Enhanced button/input styling
 st.markdown(
     """
