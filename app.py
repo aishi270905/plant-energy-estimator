@@ -18,6 +18,24 @@ else:
     header = "#ffffff"
     chart_color = "#90ee90"
 
+st.markdown(
+    f"""
+    <style>
+    body {{
+        background-color: {background};
+        color: {font};
+    }}
+    .stApp {{
+        background-color: {background};
+        color: {font};
+    }}
+    h1, h2, h3, h4, h5, h6 {{
+        color: {header};
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # Enhanced button/input styling
 st.markdown(
     """
