@@ -7,6 +7,7 @@ import io
 
 # Theme toggle
 mode = st.sidebar.radio("Choose Theme Mode:", ["🌞 Light Mode", "🌚 Dark Mode"])
+dark_mode = mode == "🌚 Dark Mode"
 
 if mode == "🌞 Light Mode":
     background = "#f9f9f9"
@@ -38,7 +39,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-if mode == "Light":
+if mode == "🌞 Light Mode":  
+
     st.markdown(
         """
         <style>
