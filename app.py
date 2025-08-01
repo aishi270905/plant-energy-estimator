@@ -18,22 +18,50 @@ else:
     header = "#ffffff"
     chart_color = "#90ee90"
 
-# Custom CSS with dynamic theme
-st.markdown(f"""
+# Enhanced button/input styling
+st.markdown(
+    """
     <style>
-    .stApp {{
-        background-color: {background};
-        color: {font};
-    }}
-    html, body, [class*="css"]  {{
-        font-family: 'Segoe UI', sans-serif;
-        color: {font};
-    }}
-    h1, h2, h3, h4, h5, h6 {{
-        color: {header};
-    }}
+    .stButton>button {
+        background-color: #708238;
+        color: white;
+        border-radius: 8px;
+        height: 3em;
+        width: auto;
+        padding: 0.5em 1em;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #556B2F;
+        color: white;
+    }
+
+    .stTextInput>div>div>input, .stNumberInput input {
+        border-radius: 5px;
+        padding: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .stFileUploader, .stSelectbox, .stDateInput, .stSlider {
+        padding: 6px;
+    }
+
+    .stDownloadButton>button {
+        background-color: #708238;
+        color: white;
+        border-radius: 6px;
+        font-weight: bold;
+        padding: 0.5em 1em;
+    }
+    .stDownloadButton>button:hover {
+        background-color: #556B2F;
+        color: white;
+    }
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 
 # Title and Description
@@ -168,15 +196,24 @@ if avg_efficiency > threshold:
 else:
     st.success("✅ Weekly efficiency is within limit.")
 
-# Plotting
-st.header("📈 Efficiency Trend")
-fig, ax = plt.subplots()
-ax.plot(df["Day"], df["Energy per Ton (kWh/ton)"], marker='o')
-ax.axhline(y=threshold, color='r', linestyle='--', label='threshold')
-ax.set_xlabel("Day")
-ax.set_ylabel("kWh per ton")
-ax.set_title("Daily Energy Efficiency")
+
+# Enhanced Plotting
+st.header("📈 Efficiency Trend (Improved Visualization)")
+
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.plot(df["Day"], df["Energy per Ton (kWh/ton)"], marker='o', color='#2e8b57', linewidth=2.5, label='Efficiency')
+ax.fill_between(df["Day"], df["Energy per Ton (kWh/ton)"], threshold, 
+                where=(df["Energy per Ton (kWh/ton)"] <= threshold),
+                interpolate=True, color='#90EE90', alpha=0.3, label='Within Threshold')
+
+ax.axhline(y=threshold, color='r', linestyle='--', linewidth=1.5, label='Threshold')
+ax.set_xlabel("Day", fontsize=12)
+ax.set_ylabel("Energy per Ton (kWh/ton)", fontsize=12)
+ax.set_title("🔍 Daily Energy Efficiency Trend", fontsize=14)
+ax.grid(True, linestyle='--', alpha=0.3)
 ax.legend()
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
 st.pyplot(fig)
 
 # Export Data as CSV
