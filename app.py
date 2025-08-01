@@ -290,6 +290,8 @@ emission_rate = st.number_input(
 )
 
 total_emissions = total_energy * emission_rate
+CO2_EMISSION_FACTOR = 0.92  
+total_co2 = total_energy * CO2_EMISSION_FACTOR
 
 tree_offset_rate = 21 
 trees_needed = total_co2 / tree_offset_rate
